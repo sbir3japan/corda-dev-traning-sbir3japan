@@ -7,7 +7,7 @@ import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.testing.node.*;
-import net.corda.training.contracts.IOUContract;
+//import net.corda.training.contracts.IOUContract;
 import net.corda.training.states.IOUState;
 import org.junit.After;
 import org.junit.Before;
@@ -60,12 +60,12 @@ public class IOUTransferFlowTests {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
-    private SignedTransaction issueIOU(String currency, long amount, Party lender, Party borrower) throws InterruptedException, ExecutionException {
-        IOUIssueFlow.InitiatorFlow flow = new IOUIssueFlow.InitiatorFlow(currency, amount, lender, borrower);
-        CordaFuture future = b.startFlow(flow);
-        mockNetwork.runNetwork();
-        return (SignedTransaction) future.get();
-    }
+//    private SignedTransaction issueIOU(String currency, long amount, Party lender, Party borrower) throws InterruptedException, ExecutionException {
+//        IOUIssueFlow.InitiatorFlow flow = new IOUIssueFlow.InitiatorFlow(currency, amount, lender, borrower);
+//        CordaFuture future = b.startFlow(flow);
+//        mockNetwork.runNetwork();
+//        return (SignedTransaction) future.get();
+//    }
 
     /**
      * Task 1.
@@ -181,23 +181,20 @@ public class IOUTransferFlowTests {
 //
 //        SignedTransaction stx = issueIOU("USD", 10, lender, borrower);
 //        IOUState inputIou = (IOUState) stx.getTx().getOutputs().get(0).getData();
-//        IOUTransferFlow.InitiatorFlow flow = new IOUTransferFlow.InitiatorFlow(inputIou.getLinearId(), lender);
+//        IOUTransferFlow.InitiatorFlow flow = new IOUTransferFlow.InitiatorFlow(inputIou.getLinearId(), c.getInfo().component2().get(0).getParty());
 //        Future<SignedTransaction> future = a.startFlow(flow);
-//        try {
-//            mockNetwork.runNetwork();
-//            future.get();
-//            stx.verifySignaturesExcept(mockNetwork.getDefaultNotaryIdentity().getOwningKey());
-//        } catch (Exception exception) {
-//            System.out.println(exception.getMessage());
-//        }
+//
+//        mockNetwork.runNetwork();
+//        SignedTransaction stx_t = future.get();
+//        stx_t.verifySignaturesExcept(mockNetwork.getDefaultNotaryNode().getInfo().getLegalIdentitiesAndCerts().get(0).getOwningKey());
 //
 //    }
-
-    /**
-     * Task 5.
-     * We need to get the transaction signed by the notary service
-     * TODO: Use a subFlow call to the [FinalityFlow] to get a signature from the lender.
-     */
+//
+//    /**
+//     * Task 5.
+//     * We need to get the transaction signed by the notary service
+//     * TODO: Use a subFlow call to the [FinalityFlow] to get a signature from the lender.
+//     */
 //    @Test
 //    public void flowReturnsTransactionSignedByAllPartiesAndNotary() throws Exception {
 //
@@ -208,13 +205,12 @@ public class IOUTransferFlowTests {
 //        IOUState inputIou = (IOUState) stx.getTx().getOutputs().get(0).getData();
 //        IOUTransferFlow.InitiatorFlow flow = new IOUTransferFlow.InitiatorFlow(inputIou.getLinearId(), c.getInfo().component2().get(0).getParty());
 //        Future<SignedTransaction> future = a.startFlow(flow);
-//        try {
-//            mockNetwork.runNetwork();
-//            future.get();
-//            stx.verifyRequiredSignatures();
-//        } catch (Exception exception) {
-//            System.out.println(exception.getMessage());
-//        }
+//
+//        mockNetwork.runNetwork();
+//        SignedTransaction stx_t= future.get();
+//        stx_t.verifyRequiredSignatures();
+//
 //    }
+
 
 }

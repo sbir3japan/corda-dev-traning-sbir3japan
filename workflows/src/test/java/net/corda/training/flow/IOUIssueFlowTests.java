@@ -12,7 +12,7 @@ import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.testing.node.*;
-import net.corda.training.contracts.IOUContract;
+//import net.corda.training.contracts.IOUContract;
 import net.corda.training.states.IOUState;
 import org.junit.After;
 import org.junit.Before;
@@ -37,29 +37,29 @@ public class IOUIssueFlowTests {
     private StartedMockNode a, b;
 
 
-    @Before
-    public void setup() {
-        MockNetworkParameters mockNetworkParameters = new MockNetworkParameters().withCordappsForAllNodes(
-                Arrays.asList(
-                        TestCordapp.findCordapp("net.corda.training.flow"),
-                        TestCordapp.findCordapp("net.corda.training.states"),
-                        TestCordapp.findCordapp("net.corda.training.contracts")
-                )
-        ).withNotarySpecs(Arrays.asList(new MockNetworkNotarySpec(new CordaX500Name("Notary", "London", "GB"))));
-        mockNetwork = new MockNetwork(mockNetworkParameters);
-        System.out.println(mockNetwork);
-
-        a = mockNetwork.createNode(new MockNodeParameters());
-        b = mockNetwork.createNode(new MockNodeParameters());
-
-        ArrayList<StartedMockNode> startedNodes = new ArrayList<>();
-        startedNodes.add(a);
-        startedNodes.add(b);
-
-        // For real nodes this happens automatically, but we have to manually register the flow for tests
-        startedNodes.forEach(el -> el.registerInitiatedFlow(IOUIssueFlow.ResponderFlow.class));
-        mockNetwork.runNetwork();
-    }
+//    @Before
+//    public void setup() {
+//        MockNetworkParameters mockNetworkParameters = new MockNetworkParameters().withCordappsForAllNodes(
+//                Arrays.asList(
+//                        TestCordapp.findCordapp("net.corda.training.flow"),
+//                        TestCordapp.findCordapp("net.corda.training.states"),
+//                        TestCordapp.findCordapp("net.corda.training.contracts")
+//                )
+//        ).withNotarySpecs(Arrays.asList(new MockNetworkNotarySpec(new CordaX500Name("Notary", "London", "GB"))));
+//        mockNetwork = new MockNetwork(mockNetworkParameters);
+//        System.out.println(mockNetwork);
+//
+//        a = mockNetwork.createNode(new MockNodeParameters());
+//        b = mockNetwork.createNode(new MockNodeParameters());
+//
+//        ArrayList<StartedMockNode> startedNodes = new ArrayList<>();
+//        startedNodes.add(a);
+//        startedNodes.add(b);
+//
+//        // For real nodes this happens automatically, but we have to manually register the flow for tests
+//        startedNodes.forEach(el -> el.registerInitiatedFlow(IOUIssueFlow.ResponderFlow.class));
+//        mockNetwork.runNetwork();
+//    }
 
     @After
     public void tearDown() {
@@ -110,7 +110,7 @@ public class IOUIssueFlowTests {
 //        Command command = ptx.getTx().getCommands().get(0);
 //        assert (command.getValue() instanceof IOUContract.Commands.Issue);
 //
-//        ptx.verifySignaturesExcept(borrower.getOwningKey(),
+//        ptx.verifySignaturesExcept(lender.getOwningKey(),
 //                mockNetwork.getDefaultNotaryNode().getInfo().getLegalIdentitiesAndCerts().get(0).getOwningKey());
 //    }
 
