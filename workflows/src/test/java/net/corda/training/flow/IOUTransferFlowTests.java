@@ -142,33 +142,10 @@ public class IOUTransferFlowTests {
 //
 //    }
 
-    /**
-     * Task 3.
-     * Check that an [IOUState] cannot be transferred to the same lender.
-     * TODO: You shouldn't have to do anything additional to get this test to pass. Belts and Braces!
-     */
-//    @Test
-//    public void iouCannotBeTransferredToSameParty() throws Exception {
-//
-//        Party lender = a.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
-//        Party borrower = b.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
-//
-//        SignedTransaction stx = issueIOU("USD", 10, lender, borrower);
-//        IOUState inputIou = (IOUState) stx.getTx().getOutputs().get(0).getData();
-//        IOUTransferFlow.InitiatorFlow flow = new IOUTransferFlow.InitiatorFlow(inputIou.getLinearId(), c.getInfo().component2().get(0).getParty());
-//        Future<SignedTransaction> future = a.startFlow(flow);
-//        try {
-//            mockNetwork.runNetwork();
-//            future.get();
-//        } catch (Exception exception) {
-//            System.out.println(exception.getMessage());
-//            assert exception.getMessage().equals("Contract verification failed: Failed requirement: The lender property must change in a transfer.");
-//        }
-//
-//    }
+
 
     /**
-     * Task 4.
+     * Task 3.
      * Get the borrowers and the new lenders signatures.
      * TODO: Amend the [IOUTransferFlow] to handle collecting signatures from multiple parties.
      * Hint: use [initiateFlow] and the [CollectSignaturesFlow] in the same way you did for the [IOUIssueFlow].
@@ -190,11 +167,11 @@ public class IOUTransferFlowTests {
 //
 //    }
 //
-//    /**
-//     * Task 5.
-//     * We need to get the transaction signed by the notary service
-//     * TODO: Use a subFlow call to the [FinalityFlow] to get a signature from the lender.
-//     */
+    /**
+     * Task 4.
+     * We need to get the transaction signed by the notary service
+     * TODO: Use a subFlow call to the [FinalityFlow] to get a signature from the lender.
+     */
 //    @Test
 //    public void flowReturnsTransactionSignedByAllPartiesAndNotary() throws Exception {
 //
