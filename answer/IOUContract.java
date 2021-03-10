@@ -87,16 +87,10 @@ public class IOUContract implements Contract {
 
                 IOUState inputState = tx.inputsOfType(IOUState.class).get(0);
                 IOUState outputState = tx.outputsOfType(IOUState.class).get(0);
-                IOUState checkOutputState = outputState.withNewLender(inputState.getLender());
 
                 require.using("Only the lender property may change.",
-                        checkOutputState.amount.equals(inputState.amount) && checkOutputState.getLinearId().equals(inputState.getLinearId()) && checkOutputState.borrower.equals(inputState.borrower) && checkOutputState.paid.equals(inputState.paid));
+                        outputState.amount.equals(inputState.amount) && outputState.getLinearId().equals(inputState.getLinearId()) && outputState.borrower.equals(inputState.borrower) && outputState.paid.equals(inputState.paid));
                 require.using("The lender property must change in a transfer.", !outputState.lender.getOwningKey().equals(inputState.lender.getOwningKey()));
-
-                List<PublicKey> listOfPublicKeys = new ArrayList<>();
-                listOfPublicKeys.add(inputState.lender.getOwningKey());
-                listOfPublicKeys.add(inputState.borrower.getOwningKey());
-                listOfPublicKeys.add(checkOutputState.lender.getOwningKey());
 
                 Set<PublicKey> listOfParticipantPublicKeys = inputState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toSet());
                 listOfParticipantPublicKeys.add(outputState.lender.getOwningKey());
