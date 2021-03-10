@@ -20,7 +20,7 @@ import static net.corda.core.contracts.ContractsDSL.requireThat;
  */
 @LegalProseReference(uri = "<prose_contract_uri>")
 public class IOUContract implements Contract {
-    public static final String IOU_CONTRACT_ID = "net.corda.training.contract.IOUContract";
+    public static final String IOU_CONTRACT_ID = "net.corda.training.contracts.IOUContract";
 
     /**
      * Add any commands required for this contract as classes within this interface.
