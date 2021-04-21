@@ -467,6 +467,7 @@ public class IOUSettleTests {
      * Both the lender and the borrower must have signed an IOU issue transaction.
      * TODO: Add a constraint to the contract code that ensures this is the case.
      */
+    @Test
 //    public void mustBeSignedByAllParticipants() {
 //        IOUState iou = new IOUState(Currencies.DOLLARS(10), ALICE.getParty(), BOB.getParty());
 //        Cash.State cash = createCashState(BOB.getParty(), Currencies.DOLLARS(5));
@@ -480,7 +481,7 @@ public class IOUSettleTests {
 //                tx.output(IOUContract.IOU_CONTRACT_ID, iou.pay(Currencies.DOLLARS(5)));
 //                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
 //                tx.command(Arrays.asList(ALICE.getPublicKey(), CHARLIE.getPublicKey()), new IOUContract.Commands.Settle());
-//                tx.failsWith("Both lender and borrower together only must sign IOU settle transaction.");
+//                tx.failsWith("Both lender and borrower must sign IOU settle transaction.");
 //                return null;
 //            });
 //            l.transaction(tx -> {
@@ -490,7 +491,7 @@ public class IOUSettleTests {
 //                tx.output(IOUContract.IOU_CONTRACT_ID, iou.pay(Currencies.DOLLARS(5)));
 //                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
 //                tx.command(BOB.getPublicKey(), new IOUContract.Commands.Settle());
-//                tx.failsWith("Both lender and borrower together only must sign IOU settle transaction.");
+//                tx.failsWith("Both lender and borrower must sign IOU settle transaction.");
 //                return null;
 //            });
 //            l.transaction(tx -> {
@@ -500,7 +501,7 @@ public class IOUSettleTests {
 //                tx.output(IOUContract.IOU_CONTRACT_ID, iou.pay(Currencies.DOLLARS(5)));
 //                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
 //                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
-//                tx.failsWith("Both lender and borrower together only must sign IOU settle transaction.");
+//                tx.verifies();
 //                return null;
 //            });
 //            return null;
