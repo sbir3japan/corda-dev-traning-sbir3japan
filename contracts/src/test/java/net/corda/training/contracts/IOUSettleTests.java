@@ -467,7 +467,7 @@ public class IOUSettleTests {
      * Both the lender and the borrower must have signed an IOU issue transaction.
      * TODO: Add a constraint to the contract code that ensures this is the case.
      */
-    @Test
+//    @Test
 //    public void mustBeSignedByAllParticipants() {
 //        IOUState iou = new IOUState(Currencies.DOLLARS(10), ALICE.getParty(), BOB.getParty());
 //        Cash.State cash = createCashState(BOB.getParty(), Currencies.DOLLARS(5));
