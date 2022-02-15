@@ -7,7 +7,7 @@ import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.testing.node.*;
-//import net.corda.training.contracts.IOUContract;
+import net.corda.training.contracts.IOUContract;
 import net.corda.training.states.IOUState;
 import org.junit.After;
 import org.junit.Before;
@@ -60,12 +60,12 @@ public class IOUTransferFlowTests {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
-//    private SignedTransaction issueIOU(String currency, long amount, Party lender, Party borrower) throws InterruptedException, ExecutionException {
-//        IOUIssueFlow.InitiatorFlow flow = new IOUIssueFlow.InitiatorFlow(currency, amount, lender, borrower);
-//        CordaFuture future = b.startFlow(flow);
-//        mockNetwork.runNetwork();
-//        return (SignedTransaction) future.get();
-//    }
+    private SignedTransaction issueIOU(String currency, long amount, Party lender, Party borrower) throws InterruptedException, ExecutionException {
+        IOUIssueFlow.InitiatorFlow flow = new IOUIssueFlow.InitiatorFlow(currency, amount, lender, borrower);
+        CordaFuture future = b.startFlow(flow);
+        mockNetwork.runNetwork();
+        return (SignedTransaction) future.get();
+    }
 
     /**
      * Task 1.

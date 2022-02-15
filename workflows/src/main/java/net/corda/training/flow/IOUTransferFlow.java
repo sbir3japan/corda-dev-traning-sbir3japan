@@ -15,8 +15,8 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 import net.corda.training.contracts.IOUContract;
+import net.corda.training.contracts.IOUContract.Transfer;
 import net.corda.training.states.IOUState;
-
 //import javax.validation.constraints.NotNull;
 import org.jetbrains.annotations.NotNull;
 import java.security.PublicKey;
@@ -41,9 +41,16 @@ public class IOUTransferFlow{
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
 
-        public InitiatorFlow(IOUState state) {
+        private final UniqueIdentifier stateLinearId;
+        private final Party newLender;
+
+        public InitiatorFlow(UniqueIdentifier stateLinearId, Party newLender) {
+            private final UniqueIdentifier stateLinearId;
+            private final Party newLender;
         }
 
+        @Suspendable
+        @Override
         // This is a mock function to prevent errors. Delete the body of the function before starting development.
         public SignedTransaction call() throws FlowException {
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
@@ -64,6 +71,8 @@ public class IOUTransferFlow{
     public static class Responder extends FlowLogic<SignedTransaction> {
 
         private final FlowSession otherPartyFlow;
+        private SecureHash txWeJustSignedId;
+
         public Responder(FlowSession otherPartyFlow) {
             this.otherPartyFlow = otherPartyFlow;
         }
@@ -83,6 +92,7 @@ public class IOUTransferFlow{
                         require.using("This must be an IOU transaction", output instanceof IOUState);
                         return null;
                     });
+                    txWeJustSignedId = stx.getId();
                 }
             }
             return subFlow(new SignTxFlow(otherPartyFlow, SignTransactionFlow.Companion.tracker()));

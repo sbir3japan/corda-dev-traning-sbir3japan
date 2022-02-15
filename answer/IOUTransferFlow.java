@@ -62,12 +62,7 @@ public class IOUTransferFlow{
             StateAndRef inputStateAndRefToTransfer = (StateAndRef) results.getStates().get(0);
             IOUState inputStateToTransfer = (IOUState) inputStateAndRefToTransfer.getState().getData();
 
-            // 3. We should now get some of the components required for to execute the transaction
-            // Here we get a reference to the default notary and instantiate a transaction builder.
-            Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
-            TransactionBuilder tb = new TransactionBuilder(notary);
-
-            // 4. Construct a transfer command to be added to the transaction.
+            // 3. Construct a transfer command to be added to the transaction.
             List<PublicKey> listOfRequiredSigners = inputStateToTransfer.getParticipants()
                     .stream().map(AbstractParty::getOwningKey)
                     .collect(Collectors.toList());
@@ -78,23 +73,26 @@ public class IOUTransferFlow{
                     listOfRequiredSigners
             );
 
-            // 5. Add the command to the transaction using the TransactionBuilder.
-            tb.addCommand(command);
+            // 4. Here we get a reference to the default notary.
+            Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
 
-            // 6. Add input and output states to flow using the TransactionBuilder.
+            // 5. Instantiate a transaction builder and add the command, input and output to the transaction using the TransactionBuilder.
+            //    Initializing transactionbuilder, notary must be added as an argument.
+            TransactionBuilder tb = new TransactionBuilder(notary);
+            tb.addCommand(command);
             tb.addInputState(inputStateAndRefToTransfer);
             tb.addOutputState(inputStateToTransfer.withNewLender(newLender), IOUContract.IOU_CONTRACT_ID);
 
-            // 7. Ensure that this flow is being executed by the current lender.
+            // 6. Ensure that this flow is being executed by the current lender.
             if (!inputStateToTransfer.lender.getOwningKey().equals(getOurIdentity().getOwningKey())) {
                 throw new IllegalArgumentException("This flow must be run by the current lender.");
             }
 
-            // 8. Verify and sign the transaction
+            // 7. Verify and sign the transaction
             tb.verify(getServiceHub());
             SignedTransaction partiallySignedTransaction = getServiceHub().signInitialTransaction(tb);
 
-            // 9. Collect all of the required signatures from other Corda nodes using the CollectSignaturesFlow
+            // 8. Collect all of the required signatures from other Corda nodes using the CollectSignaturesFlow
             List<FlowSession> sessions = new ArrayList<>();
 
             for (AbstractParty participant: inputStateToTransfer.getParticipants()) {
@@ -105,7 +103,7 @@ public class IOUTransferFlow{
             }
             sessions.add(initiateFlow(newLender));
             SignedTransaction fullySignedTransaction = subFlow(new CollectSignaturesFlow(partiallySignedTransaction, sessions));
-            /* 10. Return the output of the FinalityFlow which sends the transaction to the notary for verification
+            /* 9. Return the output of the FinalityFlow which sends the transaction to the notary for verification
              *     and the causes it to be persisted to the vault of appropriate nodes.
              */
             return subFlow(new FinalityFlow(fullySignedTransaction, sessions));
@@ -116,6 +114,7 @@ public class IOUTransferFlow{
     /**
      * This is the flow which signs IOU settlements.
      * The signing is handled by the [SignTransactionFlow].
+     * Uncomment the initiatedBy annotation to facilitate the responder flow.
      */
     @InitiatedBy(IOUTransferFlow.InitiatorFlow.class)
     public static class Responder extends FlowLogic<SignedTransaction> {
@@ -148,11 +147,8 @@ public class IOUTransferFlow{
                 }
             }
 
-            // Create a sign transaction flow
-            SignTxFlow signTxFlow = new SignTxFlow(otherPartyFlow, SignTransactionFlow.Companion.tracker());
-
-            // Run the sign transaction flow to sign the transaction
-            subFlow(signTxFlow);
+            // Create a sign transaction flow and run the sign transaction flow to sign the transaction.
+            subFlow(new SignTxFlow(otherPartyFlow, SignTransactionFlow.Companion.tracker()));
 
             // Run the ReceiveFinalityFlow to finalize the transaction and persist it to the vault.
             return subFlow(new ReceiveFinalityFlow(otherPartyFlow, txWeJustSignedId));
