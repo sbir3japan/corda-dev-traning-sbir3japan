@@ -17,6 +17,7 @@ import net.corda.core.utilities.ProgressTracker;
 import net.corda.training.contracts.IOUContract;
 import net.corda.training.contracts.IOUContract.Commands.Transfer;
 import net.corda.training.states.IOUState;
+
 //import javax.validation.constraints.NotNull;
 import org.jetbrains.annotations.NotNull;
 import java.security.PublicKey;
@@ -95,6 +96,7 @@ public class IOUTransferFlow{
                     txWeJustSignedId = stx.getId();
                 }
             }
+            
             return subFlow(new SignTxFlow(otherPartyFlow, SignTransactionFlow.Companion.tracker()));
         }
 
