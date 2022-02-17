@@ -150,7 +150,6 @@ public class IOUTransferFlow{
                 }
             }
 
-            // Create a sign transaction flow and run the sign transaction flow to sign the transaction.
             subFlow(new SignTxFlow(otherPartyFlow, SignTransactionFlow.Companion.tracker()));
 
             // Run the ReceiveFinalityFlow to finalize the transaction and persist it to the vault.
