@@ -84,6 +84,7 @@ public class IOUTransferFlow{
                 private SignTxFlow(FlowSession otherPartyFlow, ProgressTracker progressTracker) {
                     super(otherPartyFlow, progressTracker);
                 }
+
                 @Override
                 @NotNull
                 protected void checkTransaction(SignedTransaction stx) {
@@ -96,7 +97,7 @@ public class IOUTransferFlow{
                     txWeJustSignedId = stx.getId();
                 }
             }
-            
+
             return subFlow(new SignTxFlow(otherPartyFlow, SignTransactionFlow.Companion.tracker()));
         }
 
