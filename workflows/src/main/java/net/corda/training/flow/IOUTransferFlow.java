@@ -15,7 +15,7 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 import net.corda.training.contracts.IOUContract;
-import net.corda.training.contracts.IOUContract.Transfer;
+import net.corda.training.contracts.IOUContract.Commands.Transfer;
 import net.corda.training.states.IOUState;
 //import javax.validation.constraints.NotNull;
 import org.jetbrains.annotations.NotNull;
@@ -45,8 +45,8 @@ public class IOUTransferFlow{
         private final Party newLender;
 
         public InitiatorFlow(UniqueIdentifier stateLinearId, Party newLender) {
-            private final UniqueIdentifier stateLinearId;
-            private final Party newLender;
+            this.stateLinearId = stateLinearId;
+            this.newLender = newLender;
         }
 
         @Suspendable
