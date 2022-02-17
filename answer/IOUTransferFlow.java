@@ -22,6 +22,7 @@ import net.corda.training.states.IOUState;
 import org.jetbrains.annotations.NotNull;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -40,6 +41,7 @@ public class IOUTransferFlow{
     @InitiatingFlow
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
+        
         private final UniqueIdentifier stateLinearId;
         private final Party newLender;
 
@@ -103,6 +105,7 @@ public class IOUTransferFlow{
             }
             sessions.add(initiateFlow(newLender));
             SignedTransaction fullySignedTransaction = subFlow(new CollectSignaturesFlow(partiallySignedTransaction, sessions));
+            
             /* 9. Return the output of the FinalityFlow which sends the transaction to the notary for verification
              *     and the causes it to be persisted to the vault of appropriate nodes.
              */
