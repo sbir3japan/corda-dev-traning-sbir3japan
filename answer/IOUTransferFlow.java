@@ -41,7 +41,7 @@ public class IOUTransferFlow{
     @InitiatingFlow
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
-        
+
         private final UniqueIdentifier stateLinearId;
         private final Party newLender;
 
