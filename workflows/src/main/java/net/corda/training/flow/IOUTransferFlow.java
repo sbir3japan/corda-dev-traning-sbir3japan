@@ -51,7 +51,6 @@ public class IOUTransferFlow{
 
         @Suspendable
         @Override
-        // This is a mock function to prevent errors. Delete the body of the function before starting development.
         public SignedTransaction call() throws FlowException {
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
             final TransactionBuilder builder = new TransactionBuilder(notary);
@@ -92,6 +91,7 @@ public class IOUTransferFlow{
                         require.using("This must be an IOU transaction", output instanceof IOUState);
                         return null;
                     });
+                    // Once the transaction has verified, initialize txWeJustSignedID variable.
                     txWeJustSignedId = stx.getId();
                 }
             }
