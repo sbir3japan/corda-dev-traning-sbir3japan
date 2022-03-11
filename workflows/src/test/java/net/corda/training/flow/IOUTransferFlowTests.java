@@ -166,7 +166,7 @@ public class IOUTransferFlowTests {
 //        stx_t.verifySignaturesExcept(mockNetwork.getDefaultNotaryNode().getInfo().getLegalIdentitiesAndCerts().get(0).getOwningKey());
 //
 //    }
-//
+
     /**
      * Task 4.
      * We need to get the transaction signed by the notary service

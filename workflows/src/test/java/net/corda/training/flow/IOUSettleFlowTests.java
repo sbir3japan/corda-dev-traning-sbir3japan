@@ -123,10 +123,10 @@ public class IOUSettleFlowTests{
 //                IOUState outputIOU = ledgerTx.outputsOfType(IOUState.class).get(0);
 //                IOUState correctOutputIOU = inputIOU.pay(new Amount<>(5, Currency.getInstance("GBP")));
 //
-//                assert (outputIOU.amount.equals(correctOutputIOU.amount));
-//                assert (outputIOU.paid.equals(correctOutputIOU.paid));
-//                assert (outputIOU.lender.equals(correctOutputIOU.lender));
-//                assert (outputIOU.borrower.equals(correctOutputIOU.borrower));
+//                assert (outputIOU.getAmount().equals(correctOutputIOU.getAmount()));
+//                assert (outputIOU.getPaid().equals(correctOutputIOU.getPaid()));
+//                assert (outputIOU.getLender().equals(correctOutputIOU.getLender()));
+//                assert (outputIOU.getBorrower().equals(correctOutputIOU.getBorrower()));
 //
 //                // Sum all the output cash. This is complicated as there may be multiple cash output states with not all of them
 //                // being assigned to the lender.
@@ -136,13 +136,13 @@ public class IOUSettleFlowTests{
 //                        .collect(Collectors.toList());
 //
 //                // Sum the acceptable cash sent to the lender
-//                Amount<Currency> outputCashSum = new Amount<>(0, inputIOU.amount.getToken());
+//                Amount<Currency> outputCashSum = new Amount<>(0, inputIOU.getAmount().getToken());
 //                for (Cash.State cash: outputCash) {
 //                    Amount<Currency> addCash = new Amount<>(cash.getAmount().getQuantity(), cash.getAmount().getToken().getProduct());
 //                    outputCashSum = outputCashSum.plus(addCash);
 //                }
 //
-//                assert (outputCashSum.equals(inputIOU.amount.minus(inputIOU.paid).minus(outputIOU.paid)));
+//                assert (outputCashSum.equals(inputIOU.getAmount().minus(inputIOU.getPaid()).minus(outputIOU.getPaid())));
 //
 //                CommandWithParties command = ledgerTx.getCommands().get(0);
 //                assert (command.getValue().equals(new IOUContract.Commands.Settle()));

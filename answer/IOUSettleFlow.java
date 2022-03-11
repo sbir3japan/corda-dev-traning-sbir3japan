@@ -65,7 +65,7 @@ public class IOUSettleFlow {
             IOUState inputStateToSettle = (IOUState) ((StateAndRef) results.getStates().get(0)).getState().getData();
 
             // 4. Check the party running this flow is the borrower.
-            if (!inputStateToSettle.borrower.getOwningKey().equals(getOurIdentity().getOwningKey())) {
+            if (!inputStateToSettle.getBorrower().getOwningKey().equals(getOurIdentity().getOwningKey())) {
                 throw new IllegalArgumentException("The borrower must issue the flow");
             }
 
@@ -79,12 +79,12 @@ public class IOUSettleFlow {
 
             if (cashBalance.getQuantity() < settleAmount.getQuantity()) {
                 throw new IllegalArgumentException("Borrower doesn't have enough cash to settle with the amount specified.");
-            } else if (settleAmount.getQuantity() > (inputStateToSettle.amount.getQuantity() - inputStateToSettle.paid.getQuantity())) {
+            } else if (settleAmount.getQuantity() > (inputStateToSettle.getAmount().getQuantity() - inputStateToSettle.getPaid().getQuantity())) {
                 throw new IllegalArgumentException("Borrow tried to settle with more than was required for the obligation.");
             }
 
             // 7. Get some cash from the vault and add a spend to our transaction builder.
-            CashUtils.generateSpend(getServiceHub(), tb, settleAmount, getOurIdentityAndCert(), inputStateToSettle.lender, ImmutableSet.of()).getSecond();
+            CashUtils.generateSpend(getServiceHub(), tb, settleAmount, getOurIdentityAndCert(), inputStateToSettle.getLender(), ImmutableSet.of()).getSecond();
 
             // 8. Create a command. you will need to provide the Command constructor with a reference to the Settle Command as well as a list of required signers.
             Command<IOUContract.Commands.Settle> command = new Command<>(
@@ -99,7 +99,7 @@ public class IOUSettleFlow {
             tb.addInputState(inputStateAndRefToSettle);
 
             // 10. Add an IOU output state if the IOU in question that has not been fully settled.
-            if (settleAmount.getQuantity() < inputStateToSettle.amount.getQuantity()) {
+            if (settleAmount.getQuantity() < inputStateToSettle.getAmount().getQuantity()) {
                 tb.addOutputState(inputStateToSettle.pay(settleAmount), IOUContract.IOU_CONTRACT_ID);
             }
 
@@ -196,7 +196,7 @@ public class IOUSettleFlow {
 
             // 1. settle amount
             Amount<Currency> settleAmount = new Amount<>(amount, Currency.getInstance(currency));
-            
+
             // Create the cash issue command.
             OpaqueBytes issueRef = OpaqueBytes.of(new byte[0]);
             // Note: ongoing work to support multiple notary identities is still in progress. */

@@ -50,9 +50,9 @@ public class IOUContract implements Contract {
 //                require.using("Only one output state should be created when issuing an IOU.", tx.getOutputStates().size() == 1);
 //
 //                IOUState outputState = tx.outputsOfType(IOUState.class).get(0);
-//                require.using("A newly issued IOU must have a positive amount.", outputState.amount.getQuantity() > 0);
+//                require.using("A newly issued IOU must have a positive amount.", outputState.getAmount().getQuantity() > 0);
 //
-//                require.using("The lender and borrower cannot have the same identity.", outputState.lender.getOwningKey() != outputState.borrower.getOwningKey());
+//                require.using("The lender and borrower cannot have the same identity.", outputState.getLender().getOwningKey() != outputState.getBorrower().getOwningKey());
 //
 //                List<PublicKey> signers = tx.getCommands().get(0).getSigners();
 //                HashSet<PublicKey> signersSet = new HashSet<>();
@@ -73,3 +73,4 @@ public class IOUContract implements Contract {
         }
     }
 }
+

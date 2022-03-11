@@ -86,7 +86,7 @@ public class IOUTransferFlow{
             tb.addOutputState(inputStateToTransfer.withNewLender(newLender), IOUContract.IOU_CONTRACT_ID);
 
             // 6. Ensure that this flow is being executed by the current lender.
-            if (!inputStateToTransfer.lender.getOwningKey().equals(getOurIdentity().getOwningKey())) {
+            if (!inputStateToTransfer.getLender().getOwningKey().equals(getOurIdentity().getOwningKey())) {
                 throw new IllegalArgumentException("This flow must be run by the current lender.");
             }
 
@@ -105,7 +105,7 @@ public class IOUTransferFlow{
             }
             sessions.add(initiateFlow(newLender));
             SignedTransaction fullySignedTransaction = subFlow(new CollectSignaturesFlow(partiallySignedTransaction, sessions));
-            
+
             /* 9. Return the output of the FinalityFlow which sends the transaction to the notary for verification
              *     and the causes it to be persisted to the vault of appropriate nodes.
              */

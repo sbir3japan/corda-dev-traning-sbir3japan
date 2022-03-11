@@ -15,7 +15,7 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 import net.corda.training.contracts.IOUContract;
-import net.corda.training.contracts.IOUContract.Commands.Transfer;
+//import net.corda.training.contracts.IOUContract.Commands.Transfer;
 import net.corda.training.states.IOUState;
 
 //import javax.validation.constraints.NotNull;
