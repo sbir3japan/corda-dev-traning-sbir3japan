@@ -27,10 +27,10 @@ import java.util.List;
 @BelongsToContract(IOUContract.class)
 public class IOUState implements ContractState, LinearState {
 
-    public final Amount<Currency> amount;
-    public final Party lender;
-    public final Party borrower;
-    public final Amount<Currency> paid;
+    private final Amount<Currency> amount;
+    private final Party lender;
+    private final Party borrower;
+    private final Amount<Currency> paid;
     private final UniqueIdentifier linearId;
 
     // Private constructor used only for copying a State object

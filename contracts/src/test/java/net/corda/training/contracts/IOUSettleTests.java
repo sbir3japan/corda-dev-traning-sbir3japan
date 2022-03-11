@@ -133,7 +133,6 @@ public class IOUSettleTests {
      * There always has to be one input IOU in a settle transaction but there might not be an output IOU.
      * TODO: Add a constraint to check there is always one input IOU.
      */
-
 //    @Test
 //    public void mustHaveOneInputIOU() {
 //
@@ -412,7 +411,7 @@ public class IOUSettleTests {
 //            l.transaction(tx -> {
 //                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
 //                tx.input(Cash.class.getName(), fiveDollars);
-//                IOUState iouCopy = iou.copy(iou.amount, iou.lender, CHARLIE.getParty(), iou.paid).pay(Currencies.DOLLARS(5));
+//                IOUState iouCopy = iou.copy(iou.getAmount(), iou.getLender(), CHARLIE.getParty(), iou.getPaid()).pay(Currencies.DOLLARS(5));
 //                tx.output(IOUContract.IOU_CONTRACT_ID, iouCopy);
 //                tx.output(Cash.class.getName(), fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
 //                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
@@ -425,7 +424,7 @@ public class IOUSettleTests {
 //                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
 //                tx.input(Cash.class.getName(), fiveDollars);
 //                tx.output(Cash.class.getName(), fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
-//                IOUState iouCopy = iou.copy(Currencies.DOLLARS(0), iou.lender, CHARLIE.getParty(), iou.paid).pay(Currencies.DOLLARS(5));
+//                IOUState iouCopy = iou.copy(Currencies.DOLLARS(0), iou.getLender(), CHARLIE.getParty(), iou.getPaid()).pay(Currencies.DOLLARS(5));
 //                tx.output(IOUContract.IOU_CONTRACT_ID, iouCopy);
 //                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
 //                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
@@ -437,7 +436,7 @@ public class IOUSettleTests {
 //                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
 //                tx.input(Cash.class.getName(), fiveDollars);
 //                tx.output(Cash.class.getName(), fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
-//                IOUState iouCopy = iou.copy(iou.amount, CHARLIE.getParty(), iou.borrower, iou.paid).pay(Currencies.DOLLARS(5));
+//                IOUState iouCopy = iou.copy(iou.getAmount(), CHARLIE.getParty(), iou.getBorrower(), iou.getPaid()).pay(Currencies.DOLLARS(5));
 //                tx.output(IOUContract.IOU_CONTRACT_ID, iouCopy);
 //                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
 //                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
@@ -449,7 +448,7 @@ public class IOUSettleTests {
 //                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
 //                tx.input(Cash.class.getName(), fiveDollars);
 //                tx.output(Cash.class.getName(), fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
-//                IOUState iouCopy = iou.copy(iou.amount, iou.lender, iou.borrower, iou.paid).pay(Currencies.DOLLARS(5));
+//                IOUState iouCopy = iou.copy(iou.getAmount(), iou.getLender(), iou.getBorrower(), iou.getPaid()).pay(Currencies.DOLLARS(5));
 //                tx.output(IOUContract.IOU_CONTRACT_ID, iouCopy);
 //                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
 //                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());

@@ -59,9 +59,9 @@ public class IOUContract implements Contract {
                 require.using("Only one output state should be created when issuing an IOU.", tx.getOutputStates().size() == 1);
 
                 IOUState outputState = tx.outputsOfType(IOUState.class).get(0);
-                require.using("A newly issued IOU must have a positive amount.", outputState.amount.getQuantity() > 0);
+                require.using("A newly issued IOU must have a positive amount.", outputState.getAmount().getQuantity() > 0);
 
-                require.using("The lender and borrower cannot have the same identity.", outputState.lender.getOwningKey() != outputState.borrower.getOwningKey());
+                require.using("The lender and borrower cannot have the same identity.", outputState.getLender().getOwningKey() != outputState.getBorrower().getOwningKey());
 
                 List<PublicKey> signers = tx.getCommands().get(0).getSigners();
                 HashSet<PublicKey> signersSet = new HashSet<>();
@@ -89,11 +89,11 @@ public class IOUContract implements Contract {
                 IOUState outputState = tx.outputsOfType(IOUState.class).get(0);
 
                 require.using("Only the lender property may change.",
-                        outputState.amount.equals(inputState.amount) && outputState.getLinearId().equals(inputState.getLinearId()) && outputState.borrower.equals(inputState.borrower) && outputState.paid.equals(inputState.paid));
-                require.using("The lender property must change in a transfer.", !outputState.lender.getOwningKey().equals(inputState.lender.getOwningKey()));
+                        outputState.getAmount().equals(inputState.getAmount()) && outputState.getLinearId().equals(inputState.getLinearId()) && outputState.getBorrower().equals(inputState.getBorrower()) && outputState.getPaid().equals(inputState.getPaid()));
+                require.using("The lender property must change in a transfer.", !outputState.getLender().getOwningKey().equals(inputState.getLender().getOwningKey()));
 
                 Set<PublicKey> listOfParticipantPublicKeys = inputState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toSet());
-                listOfParticipantPublicKeys.add(outputState.lender.getOwningKey());
+                listOfParticipantPublicKeys.add(outputState.getLender().getOwningKey());
                 List<PublicKey> arrayOfSigners = command.getSigners();
                 Set<PublicKey> setOfSigners = new HashSet<PublicKey>(arrayOfSigners);
                 require.using("The borrower, old lender and new lender only must sign an IOU transfer transaction", setOfSigners.equals(listOfParticipantPublicKeys) && setOfSigners.size() == 3);
@@ -117,10 +117,10 @@ public class IOUContract implements Contract {
                 require.using("List has more than one element.", allGroupStates.size() < 2);
 
                 IOUState inputIOU = tx.inputsOfType(IOUState.class).get(0);
-                Amount<Currency> inputAmount = inputIOU.amount;
+                Amount<Currency> inputAmount = inputIOU.getAmount();
 
                 // check that the output cash is being assigned to the lender
-                Party lenderIdentity = inputIOU.lender;
+                Party lenderIdentity = inputIOU.getLender();
                 List<Cash.State> acceptableCash = allOutputCash.stream().filter(cash -> cash.getOwner().getOwningKey().equals(lenderIdentity.getOwningKey())).collect(Collectors.toList());
 
                 require.using("There must be output cash paid to the recipient.", acceptableCash.size() > 0);
@@ -132,7 +132,7 @@ public class IOUContract implements Contract {
                     acceptableCashSum = acceptableCashSum.plus(addCash);
                 }
 
-                Amount<Currency> amountOutstanding = inputIOU.amount.minus(inputIOU.paid);
+                Amount<Currency> amountOutstanding = inputIOU.getAmount().minus(inputIOU.getPaid());
                 require.using("The amount settled cannot be more than the amount outstanding.", amountOutstanding.getQuantity() >= acceptableCashSum.getQuantity());
 
                 if (amountOutstanding.equals(acceptableCashSum)) {
@@ -145,9 +145,9 @@ public class IOUContract implements Contract {
 
                     IOUState outputIOU = tx.outputsOfType(IOUState.class).get(0);
 
-                    require.using("The amount may not change when settling.", inputIOU.amount.equals(outputIOU.amount));
-                    require.using("The lender may not change when settling.", inputIOU.lender.equals(outputIOU.lender));
-                    require.using("The borrower may not change when settling.", inputIOU.borrower.equals(outputIOU.borrower));
+                    require.using("The amount may not change when settling.", inputIOU.getAmount().equals(outputIOU.getAmount()));
+                    require.using("The lender may not change when settling.", inputIOU.getLender().equals(outputIOU.getLender()));
+                    require.using("The borrower may not change when settling.", inputIOU.getBorrower().equals(outputIOU.getBorrower()));
                 }
 
                 Set<PublicKey> listOfParticipantPublicKeys = inputIOU.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toSet());
