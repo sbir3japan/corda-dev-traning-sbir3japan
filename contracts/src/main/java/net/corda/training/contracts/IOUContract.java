@@ -45,31 +45,31 @@ public class IOUContract implements Contract {
 
         if (commandData.equals(new Commands.Issue())) {
 
-//            requireThat(require -> {
-//                require.using("No inputs should be consumed when issuing an IOU.", tx.getInputStates().size() == 0);
-//                require.using("Only one output state should be created when issuing an IOU.", tx.getOutputStates().size() == 1);
-//
-//                IOUState outputState = tx.outputsOfType(IOUState.class).get(0);
-//                require.using("A newly issued IOU must have a positive amount.", outputState.getAmount().getQuantity() > 0);
-//
-//                require.using("The lender and borrower cannot have the same identity.", outputState.getLender().getOwningKey() != outputState.getBorrower().getOwningKey());
-//
-//                List<PublicKey> signers = tx.getCommands().get(0).getSigners();
-//                HashSet<PublicKey> signersSet = new HashSet<>();
-//                for (PublicKey key : signers) {
-//                    signersSet.add(key);
-//                }
-//
-//                List<AbstractParty> participants = tx.getOutputStates().get(0).getParticipants();
-//                HashSet<PublicKey> participantKeys = new HashSet<>();
-//                for (AbstractParty party : participants) {
-//                    participantKeys.add(party.getOwningKey());
-//                }
-//
-//                require.using("Both lender and borrower together only may sign IOU issue transaction.", signersSet.containsAll(participantKeys) && signersSet.size() == 2);
-//
-//                return null;
-//            });
+            requireThat(require -> {
+                require.using("No inputs should be consumed when issuing an IOU.", tx.getInputStates().size() == 0);
+                require.using("Only one output state should be created when issuing an IOU.", tx.getOutputStates().size() == 1);
+
+                IOUState outputState = tx.outputsOfType(IOUState.class).get(0);
+                require.using("A newly issued IOU must have a positive amount.", outputState.getAmount().getQuantity() > 0);
+
+                require.using("The lender and borrower cannot have the same identity.", outputState.getLender().getOwningKey() != outputState.getBorrower().getOwningKey());
+
+                List<PublicKey> signers = tx.getCommands().get(0).getSigners();
+                HashSet<PublicKey> signersSet = new HashSet<>();
+                for (PublicKey key : signers) {
+                    signersSet.add(key);
+                }
+
+                List<AbstractParty> participants = tx.getOutputStates().get(0).getParticipants();
+                HashSet<PublicKey> participantKeys = new HashSet<>();
+                for (AbstractParty party : participants) {
+                    participantKeys.add(party.getOwningKey());
+                }
+
+                require.using("Both lender and borrower together only may sign IOU issue transaction.", signersSet.containsAll(participantKeys) && signersSet.size() == 2);
+
+                return null;
+            });
         }
     }
 }
