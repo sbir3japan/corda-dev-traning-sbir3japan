@@ -119,7 +119,7 @@ public class IOUSettleFlow {
             SignedTransaction fullySignedTransaction = subFlow(new CollectSignaturesFlow(stx, sessions));
 
             /* 13. Return the output of the FinalityFlow which sends the transaction to the notary for verification
-             * and the causes it to be persisted to the vault of appropriate nodes.
+             *     and the causes it to be persisted to the vault of appropriate nodes.
              */
             return subFlow(new FinalityFlow(fullySignedTransaction, sessions));
 
