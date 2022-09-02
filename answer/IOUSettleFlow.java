@@ -84,7 +84,7 @@ public class IOUSettleFlow {
             }
 
             // 7. Get some cash from the vault and add a spend to our transaction builder.
-            CashUtils.generateSpend(getServiceHub(), tb, settleAmount, getOurIdentityAndCert(), inputStateToSettle.getLender(), ImmutableSet.of()).getSecond();
+            CashUtils.generateSpend(getServiceHub(), tb, settleAmount, getOurIdentityAndCert(), inputStateToSettle.getLender(), ImmutableSet.of(),false).getSecond();
 
             // 8. Create a command. you will need to provide the Command constructor with a reference to the Settle Command as well as a list of required signers.
             Command<IOUContract.Commands.Settle> command = new Command<>(
