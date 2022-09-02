@@ -84,7 +84,7 @@ public class IOUSettleFlow {
             }
 
             // 7. Get some cash from the vault and add a spend to our transaction builder.
-            CashUtils.generateSpend(getServiceHub(), tb, settleAmount, getOurIdentityAndCert(), inputStateToSettle.getLender(), ImmutableSet.of()).getSecond();
+            CashUtils.generateSpend(getServiceHub(), tb, settleAmount, getOurIdentityAndCert(), inputStateToSettle.getLender(), ImmutableSet.of(),false).getSecond();
 
             // 8. Create a command. you will need to provide the Command constructor with a reference to the Settle Command as well as a list of required signers.
             Command<IOUContract.Commands.Settle> command = new Command<>(
@@ -119,7 +119,7 @@ public class IOUSettleFlow {
             SignedTransaction fullySignedTransaction = subFlow(new CollectSignaturesFlow(stx, sessions));
 
             /* 13. Return the output of the FinalityFlow which sends the transaction to the notary for verification
-             *     and the causes it to be persisted to the vault of appropriate nodes.
+             * and the causes it to be persisted to the vault of appropriate nodes.
              */
             return subFlow(new FinalityFlow(fullySignedTransaction, sessions));
 
