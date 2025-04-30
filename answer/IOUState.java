@@ -1,16 +1,16 @@
-package net.corda.training.state;
+package net.corda.training.states;
 
-import net.corda.core.contracts.*;
-import net.corda.core.identity.Party;
-import net.corda.core.identity.AbstractParty;
-
-import java.util.*;
 import com.google.common.collect.ImmutableList;
+import net.corda.core.contracts.*;
+import net.corda.core.identity.AbstractParty;
+import net.corda.core.identity.Party;
 import net.corda.core.serialization.ConstructorForDeserialization;
-import net.corda.core.serialization.CordaSerializable;
-import net.corda.training.contract.IOUContract;
+import net.corda.training.contracts.IOUContract;
 
-import javax.servlet.http.Part;
+import java.util.Currency;
+import java.util.List;
+
+// import javax.servlet.http.Part;
 
 /**
  * The IOU State object, with the following properties:
@@ -27,10 +27,10 @@ import javax.servlet.http.Part;
 @BelongsToContract(IOUContract.class)
 public class IOUState implements ContractState, LinearState {
 
-    public final Amount<Currency> amount;
-    public final Party lender;
-    public final Party borrower;
-    public final Amount<Currency> paid;
+    private final Amount<Currency> amount;
+    private final Party lender;
+    private final Party borrower;
+    private final Amount<Currency> paid;
     private final UniqueIdentifier linearId;
 
     // Private constructor used only for copying a State object

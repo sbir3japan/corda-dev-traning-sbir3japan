@@ -1,146 +1,142 @@
-![Corda](https://www.corda.net/wp-content/uploads/2016/11/fg005_corda_b.png)
+<p align="center">
+  <img src="https://www.corda.net/wp-content/uploads/2016/11/fg005_corda_b.png" alt="Corda" width="500">
+</p>
 
-# Corda Training Template
+# CorDapp Template - Java [<img src="https://raw.githubusercontent.com/corda/samples-java/master/webIDE.png" height=25 />](https://ide.corda.net/?folder=/home/coder/cordapp-template-java)
 
-This repo contains all of the instructions and class templates for the practical exercises of the Corda two day 
-training course.
+Welcome to the Java CorDapp template. The CorDapp template is a stubbed-out CorDapp that you can use to bootstrap 
+your own CorDapps.
 
+**This is the Java version of the CorDapp template. The Kotlin equivalent is 
+[here](https://github.com/corda/cordapp-template-kotlin/).**
 
-This repository is divided into two parts: Java templates, and Kotlin templates. You may complete the training in whichever 
-language you prefer. 
+# Pre-Requisites
 
-# Setup
+See https://docs.corda.net/getting-set-up.html.
 
-### Tools 
-* JDK 1.8 latest version
-* IntelliJ latest version (2017.1 or newer)
-* git
+# Usage
 
-After installing the required tools, clone or download a zip of this repository, and place it in your desired 
-location.
+## Running tests inside IntelliJ
+	
+We recommend editing your IntelliJ preferences so that you use the Gradle runner - this means that the quasar utils
+plugin will make sure that some flags (like ``-javaagent`` - see below) are
+set for you.
 
-### IntelliJ setup
-* From the main menu, click `open` (not `import`!) then navigate to where you placed this repository.
-* Click `File->Project Structure`, and set the `Project SDK` to be the JDK you downloaded (by clicking `new` and 
-nagivating to where the JDK was installed). Click `Okay`.
-* Next, click `import` on the `Import Gradle Project` popup, leaving all options as they are. 
-* If you do not see the popup: Navigate back to `Project Structure->Modules`, clicking the `+ -> Import` button,
-navigate to and select the repository folder, select `Gradle` from the next menu, and finally click `Okay`, 
-again leaving all options as they are.
+To switch to using the Gradle runner:
 
-# Instructions
-Once you are all set up, you can start expanding on the class templates. This project follows a test-based
-development style - the unit tests for each class contain all the information you will need to complete this CorDapp.
+* Navigate to ``Build, Execution, Deployment -> Build Tools -> Gradle -> Runner`` (or search for `runner`)
+  * Windows: this is in "Settings"
+  * MacOS: this is in "Preferences"
+* Set "Delegate IDE build/run actions to gradle" to true
+* Set "Run test using:" to "Gradle Test Runner"
 
-All the tests are commented out by default - to complete this training, you will uncomment them one at a time, building up 
-the CorDapp until it passes everything.
+If you would prefer to use the built in IntelliJ JUnit test runner, you can run ``gradlew installQuasar`` which will
+copy your quasar JAR file to the lib directory. You will then need to specify ``-javaagent:lib/quasar.jar``
+and set the run directory to the project root directory for each test.
 
-You will begin by opening `IOUState` and `IOUStateTests` in your language of choice and uncommenting the first test. Then, use the TODO and 
-hints to modify `IOUState` to pass the test. 
+## Running the nodes
 
-In order to issue IOU's using Corda - You will first fix `IOUState`, then `IOUContract`, and lastly `IOUIssueFlow`. Then you can move on to
-more challenging exercises specified in Transfer and Settle testing files.
+See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
-### Running the tests
-* Kotlin: Select `Kotlin - Unit tests` from the dropdown run configuration menu, and click the green play button.
-* Java: Select `Java - Unit tests` from the dropdown run configuration menu, and click the green play button.
-* Individual tests can be run by clicking the green arrow in the line number column next to each test.
-* When running flow tests you must add the following to your run / debug configuration in the VM options field. This enables us to use
-* Quasar - a library that provides high-performance, lightweight threads.
-* "-javaagent: /PATH_TO_FILE_FROM_ROOT_DIR/quasar.jar"
+## Interacting with the nodes
 
-# Template Files
+### Shell
 
-### Kotlin
-State:
+When started via the command line, each node will display an interactive shell:
 
-* Template: `kotlin-source/src/test/kotlin/net/corda/training/state/IOUState.kt`
-* Tests: `kotlin-source/src/main/kotlin/net/corda/training/state/IOUStateTests.kt`
+    Welcome to the Corda interactive shell.
+    Useful commands include 'help' to see what is available, and 'bye' to shut down the node.
+    
+    Tue Nov 06 11:58:13 GMT 2018>>>
 
-Contract:
+You can use this shell to interact with your node. For example, enter `run networkMapSnapshot` to see a list of 
+the other nodes on the network:
 
-* Template: `kotlin-source/src/main/kotlin/net/corda/training/contract/IOUContract.kt`
-* Issue Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUIssueTests.kt`
-* Transfer Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUTransferTests.kt`
-* Settle Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUSettleTests.kt`
+    Tue Nov 06 11:58:13 GMT 2018>>> run networkMapSnapshot
+    [
+      {
+      "addresses" : [ "localhost:10002" ],
+      "legalIdentitiesAndCerts" : [ "O=Notary, L=London, C=GB" ],
+      "platformVersion" : 3,
+      "serial" : 1541505484825
+    },
+      {
+      "addresses" : [ "localhost:10005" ],
+      "legalIdentitiesAndCerts" : [ "O=PartyA, L=London, C=GB" ],
+      "platformVersion" : 3,
+      "serial" : 1541505382560
+    },
+      {
+      "addresses" : [ "localhost:10008" ],
+      "legalIdentitiesAndCerts" : [ "O=PartyB, L=New York, C=US" ],
+      "platformVersion" : 3,
+      "serial" : 1541505384742
+    }
+    ]
+    
+    Tue Nov 06 12:30:11 GMT 2018>>> 
 
-Flow:
+You can find out more about the node shell [here](https://docs.corda.net/shell.html).
 
-* Issue flow template: `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUIssueFlow.kt`
-* Issue flow tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUIssueFlowTests.kt`
-* Transfer flow template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUTransferFlow.kt`
-* Transfer flow tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUTransferFlowTests.kt`
-* Settle flow template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUSettleFlow.kt`
-* Settle flow tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt`
+### Client
 
-The code in the following files was already added for you:
+`clients/src/main/java/com/template/Client.java` defines a simple command-line client that connects to a node via RPC 
+and prints a list of the other nodes on the network.
 
-* `kotlin-source/src/main/kotlin/net/corda/training/plugin/IOUPlugin.kt`
-* `kotlin-source/src/test/kotlin/net/corda/training/Main.kt`
-* `kotling-source/src/main/kotlin/net/corda/training/plugin/IOUPlugin.kt`
-* `kotling-source/src/main/java/kotlin/corda/training/flow/SelfIssueCashFlow.kt`
+#### Running the client
 
+##### Via the command line
 
-### Java
-State:
+Run the `runTemplateClient` Gradle task. By default, it connects to the node with RPC address `localhost:10006` with 
+the username `user1` and the password `test`.
 
-* Template: `java-source/src/main/java/net/corda/training/state/IOUState.java`
-* Tests: `java-source/src/test/java/net/corda/training/state/IOUStateTests.java`
+##### Via IntelliJ
 
-Contract:
+Run the `Run Template Client` run configuration. By default, it connects to the node with RPC address `localhost:10006` 
+with the username `user1` and the password `test`.
 
-* Template: `java-source/src/main/java/net/corda/training/contract/IOUContract.java`
-* Issue Tests: `java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java`
-* Transfer Tests: `java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java`
-* Settle Tests: `java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java`
+### Webserver
 
-Flow:
+`clients/src/main/java/com/template/webserver/` defines a simple Spring webserver that connects to a node via RPC and 
+allows you to interact with the node over HTTP.
 
-* Issue template: `java-source/src/main/java/net/corda/training/flow/IOUIssueFlow.java`
-* Issue tests: `java-source/src/test/java/net/corda/training/flow/IOUIssueFlowTests.java`
-* Transfer template: `java-source/src/main/java/net/corda/training/flow/IOUTransferFlow.java`
-* Transfer tests: `java-source/src/test/java/net/corda/training/flow/IOUTransferFlowTests.java`
-* Settle template: `java-source/src/main/java/net/corda/training/flow/IOUSettleFlow.java`
-* Settle tests: `java-source/src/test/java/net/corda/training/flow/IOUSettleFlowTests.java`
+The API endpoints are defined here:
 
-The code in the following files was already added for you:
+     clients/src/main/java/com/template/webserver/Controller.java
 
-* `java-source/src/main/java/net/corda/training/plugin/IOUPlugin.java`
-* `java-source/src/test/java/net/corda/training/NodeDriver.java`
-* `java-source/src/main/java/net/corda/training/plugin/IOUPlugin.java`
-* `java-source/src/main/java/net/corda/training/flow/SelfIssueCashFlow.java`
+And a static webpage is defined here:
 
+     clients/src/main/resources/static/
 
-# Running the CorDapp
-Once your application passes all tests in `IOUStateTests`, `IOUIssueTests`, and `IOUIssueFlowTests`, you can run the application and 
-interact with it via a web browser. To run the finished application, you have two choices for each language: from the terminal, and from IntelliJ.
+#### Running the webserver
 
-### Kotlin
-* Terminal: Navigate to the root project folder and run `./gradlew kotlin-source:deployNodes`, followed by 
-`./kotlin-source/build/node/runnodes`
-* IntelliJ: With the project open, select `Kotlin - Node driver` from the dropdown run configuration menu, and click 
-the green play button.
+##### Via the command line
 
-### Java
-* Terminal: Navigate to the root project folder and run `./gradlew java-source:deployNodes`, followed by 
-`./java-source/build/node/runnodes`
-* IntelliJ: With the project open, select `Java - NodeDriver` from the dropdown run configuration menu, and click 
-the green play button.
+Run the `runTemplateServer` Gradle task. By default, it connects to the node with RPC address `localhost:10006` with 
+the username `user1` and the password `test`, and serves the webserver on port `localhost:10050`.
 
-### Interacting with the CorDapp
-Once all the three nodes have started up (look for `Webserver started up in XXX sec` in the terminal or IntelliJ ), you can interact
-with the app via a web browser. 
-* From a Node Driver configuration, look for `Starting webserver on address localhost:100XX` for the addresses. 
+##### Via IntelliJ
 
-* From the terminal: Node A: `localhost:10009`, Node B: `localhost:10012`, Node C: `localhost:10015`.
+Run the `Run Template Server` run configuration. By default, it connects to the node with RPC address `localhost:10006` 
+with the username `user1` and the password `test`, and serves the webserver on port `localhost:10050`.
 
-To access the front-end gui for each node, navigate to `localhost:XXXX/web/iou/`
+#### Interacting with the webserver
 
-## Troubleshooting:
-When running the flow tests, if you get a Quasar instrumention error then add:
+The static webpage is served on:
 
-```-ea -javaagent:lib/quasar.jar```
+    http://localhost:10050
 
-to the VM args property in the default run configuration for JUnit in IntelliJ.
+While the sole template endpoint is served on:
 
-Solutions are available [here](https://github.com/corda/corda-training-solutions).
+    http://localhost:10050/templateendpoint
+    
+# Extending the template
+
+You should extend this template as follows:
+
+* Add your own state and contract definitions under `contracts/src/main/java/`
+* Add your own flow definitions under `workflows/src/main/java/`
+* Extend or replace the client and webserver under `clients/src/main/java/`
+
+For a guided example of how to extend this template, see the Hello, World! tutorial 
+[here](https://docs.corda.net/hello-world-introduction.html).

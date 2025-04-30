@@ -1,0 +1,69 @@
+import static org.gradle.api.JavaVersion.VERSION_17
+
+apply plugin: 'org.springframework.boot'
+
+sourceSets {
+    main {
+        resources {
+            srcDir rootProject.file("config/dev")
+        }
+    }
+}
+
+dependencies {
+    // Corda dependencies.
+    implementation "$corda_release_group:corda-rpc:$corda_release_version"
+    implementation "net.corda:corda-core:$corda_release_version"
+    implementation "net.corda:corda-jackson:$corda_release_version"
+    implementation "net.corda:corda-rpc:$corda_release_version"
+    implementation "net.corda:corda:$corda_release_version"
+    implementation "$corda_release_group:corda-finance-contracts:$corda_release_version"
+    implementation "$corda_release_group:corda-finance-workflows:$corda_release_version"
+    testImplementation "net.corda:corda-node-driver:$corda_release_version"
+
+    // CorDapp dependencies.
+    implementation project(":contracts")
+    implementation project(":workflows")
+
+    implementation("org.springframework.boot:spring-boot-starter-websocket:$spring_boot_version") {
+        exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+    }
+
+    implementation "org.springframework.boot:spring-boot-devtools:$spring_boot_version"
+
+    implementation "org.apache.logging.log4j:log4j-slf4j2-impl:${log4j_version}"
+    implementation "org.apache.logging.log4j:log4j-web:${log4j_version}"
+    implementation "org.slf4j:jul-to-slf4j:$slf4j_version"
+}
+
+springBoot {
+    mainClass = "com.template.webserver.Server"
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+    kotlinOptions {
+        languageVersion = "1.9"
+        apiVersion = "1.9"
+        jvmTarget = VERSION_17
+        javaParameters = true   //Useful for reflection.
+    }
+}
+
+/* The Client is the communication channel between the external and the node. This task will help you immediately
+ * execute your rpc methods in the main method of the client.kt. You can somewhat see this as a quick test of making
+ * RPC calls to your nodes.
+ */
+task runTemplateClient(type: JavaExec, dependsOn: assemble) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.template.Client'
+    args 'localhost:10006', 'user1', 'test'
+}
+
+/* This task will start the springboot server that connects to your node (via RPC connection). All of the http requests
+ * are in the Controller file. You can leave the Server.kt and NodeRPCConnection.kt file untouched for your use.
+ */
+task runTemplateServer(type: JavaExec, dependsOn: assemble) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.template.webserver.Starter'
+    args '--server.port=10050', '--config.rpc.host=localhost', '--config.rpc.port=10006', '--config.rpc.username=user1', '--config.rpc.password=test'
+}
