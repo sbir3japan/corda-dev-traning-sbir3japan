@@ -14,8 +14,7 @@ import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
 
-import static groovy.util.GroovyTestCase.assertEquals;
-import static net.corda.training.TestUtils.*;
+import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
