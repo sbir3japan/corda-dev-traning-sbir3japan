@@ -58,7 +58,6 @@ buildscript {//properties that you need to build the project
     repositories {
         mavenLocal()
         mavenCentral()
-
         maven { url 'https://download.corda.net/maven/corda-dependencies' }
         maven { url 'https://download.corda.net/maven/corda-releases' }
     }
