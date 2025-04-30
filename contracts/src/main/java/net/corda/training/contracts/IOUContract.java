@@ -73,4 +73,3 @@ public class IOUContract implements Contract {
         }
     }
 }
-
