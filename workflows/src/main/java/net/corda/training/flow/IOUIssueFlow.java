@@ -50,7 +50,6 @@ public class IOUIssueFlow {
 
 			// Step 1. create IOUState
 			// Note .Make sure that the Party of the lender and the executing node are equal.
-			System.out.printf("The inside of GetIdentity() =",getOurIdentity());
 
 			if ( !borrower.equals(getOurIdentity())){
 				throw new FlowException("The Party of the borrower and the executing node are different..");

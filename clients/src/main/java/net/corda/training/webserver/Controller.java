@@ -2,12 +2,16 @@ package net.corda.training.webserver;
 
 import net.corda.core.concurrent.CordaFuture;
 import net.corda.core.contracts.StateAndRef;
+import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.FlowLogic;
 import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.messaging.CordaRPCOps;
 import net.corda.core.messaging.FlowHandle;
+import net.corda.core.messaging.FlowHandleWithClientId;
+import net.corda.core.node.services.Vault;
+import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.training.flow.IOUIssueFlow;
 import net.corda.training.flow.IOUIssueFlowArgs;
@@ -21,7 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.ServiceUnavailableException;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -42,95 +46,198 @@ public class Controller {
         return "Define an endpoint here.";
     }
 
-    //Implement flows using HTTP POST and receive parameters in a JSON format
-    @PostMapping(value = "/iou_issue/start")
+    // Implement IOUIssueFlow as HTTP POST request.
+    @PostMapping(value = "/iou/issue")
     public ResponseEntity<?> startIOUIssue(@RequestBody IOUIssueFlowArgs iouIssueFlowArgs){
 
-        //Cant take two parties in a format of "Party", therefore,
-        // take them as String objects then turn into CordaX500name and then turn into Party objects.
+        // Cant take two parties as Party objects, therefore,
+        // First, take these as String objects from IOUIssueFlowArgs,
+        // then convert them to CordaX500Name, and finally to Party objects.
         CordaX500Name lenderName = CordaX500Name.parse(iouIssueFlowArgs.getLender());
         Party lender = proxy.wellKnownPartyFromX500Name(lenderName);
 
         CordaX500Name borrowerName = CordaX500Name.parse(iouIssueFlowArgs.getBorrower());
         Party borrower = proxy.wellKnownPartyFromX500Name(borrowerName);
 
+        // Start IOU issue flow, using startFlowDynamicWithClientId.
         try{
-            CordaFuture<SignedTransaction> result = proxy.startFlowDynamicWithClientId(
+            FlowHandleWithClientId result_iou_issue = proxy.startFlowDynamicWithClientId(
                     iouIssueFlowArgs.getClientId(),
                     IOUIssueFlow.InitiatorFlow.class,
                     iouIssueFlowArgs.getCurrency(),
                     iouIssueFlowArgs.getAmount(),
                     lender,
                     borrower
-            ).getReturnValue();
+            );
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+            // Extract every parameter from FlowHandleWithClientId and put them into Map for output of the flow result.
+            // For those who want to see the details of IOUIssueFlow, including results, pls run VaultQuery or refer logs.
+            // This POST method cannot return the flow results as seen in the Corda node shell,
+            // since startFlowDynamicWithClientId only returns a FlowHandleWithClientId object.
+            Map<String,String> mapped_result_iou_issue = new HashMap<>();
+            mapped_result_iou_issue.put("clientId",result_iou_issue.getClientId());
+            mapped_result_iou_issue.put("StateMachineId", String.valueOf(result_iou_issue.getId()));
+            mapped_result_iou_issue.put("CordaFuture", result_iou_issue.getReturnValue().toString());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(mapped_result_iou_issue);
 
         } catch (Exception e) {
+            // Errors which might occur between clients and servers will be caught here.
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    @PostMapping(value = "/iou_transfer/start")
+    // Implement IOUTransferFlow as HTTP POST request.
+    @PostMapping(value = "/iou/transfer")
     public ResponseEntity<?> startIOUTransfer(@RequestBody IOUTransferFlowArgs iouTransferFlowArgs){
 
-        //Cant take two parties in a format of "Party", therefore,
-        // take them as String objects then turn into CordaX500name and then turn into Party objects.
+        // Can't take UUID as a "UUID" object, therefore,
+        // take it as a String object and convert it into a UUID object.
+        UniqueIdentifier casted_stateLinearId = UniqueIdentifier.Companion.fromString(iouTransferFlowArgs.getStateLinearId());
+
+        // Cant take two parties as Party objects, therefore,
+        // First, take these as String objects from IOUIssueFlowArgs,
+        // then convert them to CordaX500Name, and finally to Party objects.
         CordaX500Name lenderName = CordaX500Name.parse(iouTransferFlowArgs.getNewLender());
         Party newLender = proxy.wellKnownPartyFromX500Name(lenderName);
 
+        // Start IOU issue flow, using startFlowDynamicWithClientId.
         try{
-            CordaFuture<SignedTransaction> result = proxy.startFlowDynamicWithClientId(
+            FlowHandleWithClientId result_iou_transfer = proxy.startFlowDynamicWithClientId(
                     iouTransferFlowArgs.getClientId(),
                     IOUTransferFlow.InitiatorFlow.class,
-                    iouTransferFlowArgs.getStateLinearId(),
+                    casted_stateLinearId,
                     newLender
-            ).getReturnValue();
+            );
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+            // Extract every parameter from FlowHandleWithClientId and put them into Map for output of the flow result.
+            // For those who want to see the details of IOUIssueFlow, including results, pls run VaultQuery or refer logs.
+            // This POST method cannot return the flow results as seen in the Corda node shell,
+            // since startFlowDynamicWithClientId only returns a FlowHandleWithClientId object.
+            Map<String,String> mapped_result_iou_transfer = new HashMap<>();
+            mapped_result_iou_transfer.put("clientId",result_iou_transfer.getClientId());
+            mapped_result_iou_transfer.put("StateMachineId", String.valueOf(result_iou_transfer.getId()));
+            mapped_result_iou_transfer.put("CordaFuture", result_iou_transfer.getReturnValue().toString());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(mapped_result_iou_transfer);
 
         } catch (Exception e) {
+            // Errors which might occur between clients and servers will be caught here.
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    //Reattach to flow using clientId
-//    @PostMapping(value = "/iou_issue/reattach", consumes = "application/json")
-//    public ResponseEntity<String> reattachIOUIssue(@RequestParam(value = "clientId") String clientId){
-//        try{
-//            String result = proxy.reattachFlowWithClientId(clientId).getReturnValue().toString();
-//            return ResponseEntity.status(HttpStatus.CREATED).body(result);
-//        }catch (Exception e) {
-//            return ResponseEntity
-//                    .status(HttpStatus.BAD_REQUEST)
-//                    .body(e.getMessage());
-//        }
-//    }
+    //Capture all states.
+    @GetMapping(value = "/iou_state/all")
+    public ResponseEntity<?> vaultQueryAllIOUState(){
 
-    //Delete client id
-//    @PostMapping(value = "/iou_issue/remove", consumes = "application/json")
-//    public ResponseEntity<?> getIOUIssue(@RequestParam(value = "clientId") String clientId){
-//        try{
-//            Boolean isClientIdRemoved = proxy.removeClientId(clientId);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(isClientIdRemoved);
-//        }catch (Exception e) {
-//            return ResponseEntity
-//                    .status(HttpStatus.BAD_REQUEST)
-//                    .body(e.getMessage());
-//        }
-//
-//    }
+        // Define query criteria that filters all IOU states.
+        QueryCriteria criteria = new QueryCriteria.VaultQueryCriteria(Vault.StateStatus.ALL);
 
-    //Get transactions
-//    @GetMapping(value = "/iou_issue/transaction/get", consumes = "application/json")
-//    public ResponseEntity<?> getIOUissueTransaction(@RequestParam(value = "txnId") String txnId){
-//        try{
-//            String result = proxy.getVaultTransactionNotes(SecureHash.create(txnId)).toString();
-//            return ResponseEntity.status(HttpStatus.CREATED).body(result);
-//        }catch (Exception e) {
-//            return ResponseEntity
-//                    .status(HttpStatus.BAD_REQUEST)
-//                    .body(e.getMessage());
-//        }
-//    }
+        try{
+
+            Vault.Page<IOUState> results = proxy.vaultQueryByCriteria(criteria, IOUState.class);
+
+            // Instantiate a list to store IOU state's info.
+            List<Map<String,String>> result_for_output = new ArrayList<>();
+
+            // Put the desired information into the map and repeat the process
+            // until all IOU states have been processed.
+            results.getStates().forEach(iouStateStateAndRef -> {
+
+                // Create Map object and put entries for result_for_output
+                Map<String,String> entry = new HashMap<>();
+                entry.put("amount",iouStateStateAndRef.getState().getData().getAmount().toString());
+                entry.put("lender",iouStateStateAndRef.getState().getData().getLender().toString());
+                entry.put("borrower",iouStateStateAndRef.getState().getData().getBorrower().toString());
+                entry.put("linearId",iouStateStateAndRef.getState().getData().getLinearId().getId().toString());
+                entry.put("txnId",iouStateStateAndRef.getRef().getTxhash().toString());
+
+                result_for_output.add(entry);
+
+            });
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(result_for_output);
+
+        } catch (Exception e) {
+            // Included a catch block to handle potential HTTP request errors.
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    // Capture unconsumed states
+    @GetMapping(value = "/iou_state/unconsumed")
+    public ResponseEntity<?> vaultQueryUnconsumedIOUState(){
+
+        // Define query criteria that filters all Unconsumed IOU states.
+        QueryCriteria criteria = new QueryCriteria.VaultQueryCriteria(Vault.StateStatus.UNCONSUMED);
+
+        try{
+            // Search matching IOU states
+            Vault.Page<IOUState> results = proxy.vaultQueryByCriteria(criteria, IOUState.class);
+
+            // Instantiate a list to store IOU state's info.
+            List<Map<String,String>> result_for_output = new ArrayList<>();
+
+            // Put the desired information into the map and repeat the process
+            // until all IOU states have been processed.
+            results.getStates().forEach(iouStateStateAndRef -> {
+
+                // Create Map object and put entries for result_for_output
+                Map<String,String> entry = new HashMap<>();
+                entry.put("amount",iouStateStateAndRef.getState().getData().getAmount().toString());
+                entry.put("lender",iouStateStateAndRef.getState().getData().getLender().toString());
+                entry.put("borrower",iouStateStateAndRef.getState().getData().getBorrower().toString());
+                entry.put("linearId",iouStateStateAndRef.getState().getData().getLinearId().getId().toString());
+                entry.put("txnId",iouStateStateAndRef.getRef().getTxhash().toString());
+
+                result_for_output.add(entry);
+
+            });
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(result_for_output);
+
+        } catch (Exception e) {
+            // Included a catch block to handle potential HTTP request errors.
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    // Capture consumed states
+    @GetMapping(value = "/iou_state/consumed")
+    public ResponseEntity<?> vaultQueryConsumedIOUState(){
+
+        // Define query criteria that filters all Consumed IOU states.
+        QueryCriteria criteria = new QueryCriteria.VaultQueryCriteria(Vault.StateStatus.CONSUMED);
+
+        try{
+            // Search matching IOU states
+            Vault.Page<IOUState> results = proxy.vaultQueryByCriteria(criteria, IOUState.class);
+
+            // Instantiate a list to store IOU state's info.
+            List<Map<String,String>> result_for_output = new ArrayList<>();
+
+            // Put the desired information into the map and repeat the process
+            // until all IOU states have been processed.
+            results.getStates().forEach(iouStateStateAndRef -> {
+
+                // Create Map object and put entries for result_for_output
+                Map<String,String> entry = new HashMap<>();
+                entry.put("amount",iouStateStateAndRef.getState().getData().getAmount().toString());
+                entry.put("lender",iouStateStateAndRef.getState().getData().getLender().toString());
+                entry.put("borrower",iouStateStateAndRef.getState().getData().getBorrower().toString());
+                entry.put("linearId",iouStateStateAndRef.getState().getData().getLinearId().getId().toString());
+                entry.put("txnId",iouStateStateAndRef.getRef().getTxhash().toString());
+
+                result_for_output.add(entry);
+
+            });
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(result_for_output);
+
+        } catch (Exception e) {
+            // Included a catch block to handle potential HTTP request errors.
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

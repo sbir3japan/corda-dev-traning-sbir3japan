@@ -2,11 +2,18 @@ package net.corda.training.flow;
 
 import net.corda.core.identity.Party;
 
+// A class to hold the deserialized arguments required to start IOU Issue flow.
 public class IOUIssueFlowArgs {
+
+    // ClientId must be defined here as startFlowDynamicWithClientId is used as a flow call logic.
     private String clientId;
+
     private String currency;
+
     private long amount;
+
     private String lender;
+
     private String borrower;
 
     public IOUIssueFlowArgs(){}
@@ -18,6 +25,7 @@ public class IOUIssueFlowArgs {
         this.lender = lender;
         this.borrower = borrower;
     }
+
     public String getClientId(){
         return  clientId;
     }

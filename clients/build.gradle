@@ -62,15 +62,25 @@ task runTemplateClient(type: JavaExec, dependsOn: assemble) {
 /* This task will start the springboot server that connects to your node (via RPC connection). All of the http requests
  * are in the Controller file. You can leave the Server.kt and NodeRPCConnection.kt file untouched for your use.
  */
+
+//HTTP(RPC) server for Party A
 task runTemplateServerA(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'net.corda.training.webserver.Starter'
     args '--server.port=10050', '--config.rpc.host=localhost', '--config.rpc.port=10006', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
+//HTTP(RPC) server for Party B
 task runTemplateServerB(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'net.corda.training.webserver.Starter'
     args '--server.port=10060', '--config.rpc.host=localhost', '--config.rpc.port=10009', '--config.rpc.username=user1', '--config.rpc.password=test'
+}
+
+//HTTP(RPC) server for Party B
+task runTemplateServerC(type: JavaExec, dependsOn: assemble) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'net.corda.training.webserver.Starter'
+    args '--server.port=10070', '--config.rpc.host=localhost', '--config.rpc.port=10012', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
