@@ -17,47 +17,13 @@ import java.util.List;
  *
  */
 @BelongsToContract(IOUContract.class)
-public class IOUState implements ContractState, LinearState  {
+public class IOUState implements ContractState {
 
-    private final Amount<Currency> amount;
-    private final Party lender;
-    private final Party borrower;
-    private final Amount<Currency> paid;
-    private final UniqueIdentifier linearId;
-
-    // Private constructor used only for copying a State object
     @ConstructorForDeserialization
-    private IOUState(Amount<Currency> amount, Party lender, Party borrower, Amount<Currency> paid, UniqueIdentifier linearId){
-        this.amount = amount;
-        this.lender = lender;
-        this.borrower = borrower;
-        this.paid = paid;
-        this.linearId = linearId;
+    private IOUState(Amount<Currency> amount, Party lender, Party borrower, Amount<Currency> paid, UniqueIdentifier linearId) {
     }
 
-    public IOUState(Amount<Currency> amount, Party lender, Party borrower) {
-        this(amount, lender, borrower, new Amount<>(0, amount.getToken()), new UniqueIdentifier());
-    }
-
-    public Amount<Currency> getAmount() {
-        return amount;
-    }
-
-    public Party getLender() {
-        return lender;
-    }
-
-    public Party getBorrower() {
-        return borrower;
-    }
-
-    public Amount<Currency> getPaid() {
-        return paid;
-    }
-
-    @Override
-    public UniqueIdentifier getLinearId() {
-        return linearId;
+    public IOUState() {
     }
 
     /**
@@ -66,24 +32,19 @@ public class IOUState implements ContractState, LinearState  {
      */
     @Override
     public List<AbstractParty> getParticipants() {
-        return ImmutableList.of(lender, borrower);
+        return ImmutableList.of();
     }
-
-    public IOUState withNewLender(Party newLender) {
-        return new IOUState(amount, newLender, borrower, paid, linearId);
-    }
-
-    /**
-     * Helper methods for when building transactions for settling and transferring IOUs.
-     * - [pay] adds an amount to the paid property. It does no validation.
-     * - [withNewLender] creates a copy of the current state with a newly specified lender. For use when transferring.
-     * - [copy] creates a copy of the state using the internal copy constructor ensuring the LinearId is preserved.
-     */
-    public IOUState pay(Amount<Currency> amountToPay) {
-        Amount<Currency> newAmountPaid = this.paid.plus(amountToPay);
-        return new IOUState(amount, lender, borrower, newAmountPaid, linearId);
-    }
-    public IOUState copy(Amount<Currency> amount, Party lender, Party borrower, Amount<Currency> paid) {
-        return new IOUState(amount, lender, borrower, paid, this.getLinearId());
-    }
+//    /**
+//     * Helper methods for when building transactions for settling and transferring IOUs.
+//     * - [pay] adds an amount to the paid property. It does no validation.
+//     * - [withNewLender] creates a copy of the current state with a newly specified lender. For use when transferring.
+//     * - [copy] creates a copy of the state using the internal copy constructor ensuring the LinearId is preserved.
+//     */
+//    public IOUState pay(Amount<Currency> amountToPay) {
+//        Amount<Currency> newAmountPaid = this.paid.plus(amountToPay);
+//        return new IOUState(amount, lender, borrower, newAmountPaid, linearId);
+//    }
+//    public IOUState copy(Amount<Currency> amount, Party lender, Party borrower, Amount<Currency> paid) {
+//        return new IOUState(amount, lender, borrower, paid, this.getLinearId());
+//    }
 }
