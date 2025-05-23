@@ -70,6 +70,9 @@ public class Controller {
                     borrower
             );
 
+            CordaFuture<SignedTransaction> sampleFuture = result_iou_issue.getReturnValue();
+            SignedTransaction stx = sampleFuture.get();
+
             // Extract every parameter from FlowHandleWithClientId and put them into Map for output of the flow result.
             // For those who want to see the details of IOUIssueFlow, including results, pls run VaultQuery or refer logs.
             // This POST method cannot return the flow results as seen in the Corda node shell,
@@ -77,7 +80,7 @@ public class Controller {
             Map<String,String> mapped_result_iou_issue = new HashMap<>();
             mapped_result_iou_issue.put("clientId",result_iou_issue.getClientId());
             mapped_result_iou_issue.put("StateMachineId", String.valueOf(result_iou_issue.getId()));
-            mapped_result_iou_issue.put("CordaFuture", result_iou_issue.getReturnValue().toString());
+            mapped_result_iou_issue.put("SignedTransaction", stx.toString());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(mapped_result_iou_issue);
 
@@ -110,6 +113,9 @@ public class Controller {
                     newLender
             );
 
+            CordaFuture<SignedTransaction> sampleFuture = result_iou_transfer.getReturnValue();
+            SignedTransaction stx = sampleFuture.get();
+
             // Extract every parameter from FlowHandleWithClientId and put them into Map for output of the flow result.
             // For those who want to see the details of IOUIssueFlow, including results, pls run VaultQuery or refer logs.
             // This POST method cannot return the flow results as seen in the Corda node shell,
@@ -117,7 +123,7 @@ public class Controller {
             Map<String,String> mapped_result_iou_transfer = new HashMap<>();
             mapped_result_iou_transfer.put("clientId",result_iou_transfer.getClientId());
             mapped_result_iou_transfer.put("StateMachineId", String.valueOf(result_iou_transfer.getId()));
-            mapped_result_iou_transfer.put("CordaFuture", result_iou_transfer.getReturnValue().toString());
+            mapped_result_iou_transfer.put("SignedTransaction", stx.toString());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(mapped_result_iou_transfer);
 
