@@ -1,5 +1,4 @@
-package net.corda.training.flow;
-
+package net.corda.training.webserver;
 
 import net.corda.core.contracts.UniqueIdentifier;
 
@@ -33,5 +32,3 @@ public class IOUTransferFlowArgs {
 //        return newLender;
 //    }
 }
-
-
