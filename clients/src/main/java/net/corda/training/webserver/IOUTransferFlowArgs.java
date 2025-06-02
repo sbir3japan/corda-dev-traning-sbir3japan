@@ -5,30 +5,13 @@ import net.corda.core.contracts.UniqueIdentifier;
 // A class to hold the deserialized arguments required to start IOU Transfer flow.
 public class IOUTransferFlowArgs {
 
-//    // ClientId must be defined here as startFlowDynamicWithClientId is used as a flow call logic.
-//    private String clientId;
-//
-//    private String stateLinearId;
-//
-//    private String newLender;
-//
-//    public IOUTransferFlowArgs(){};
-//
-//    public IOUTransferFlowArgs(String clientId, String stateLinearId, String newLender){
-//        this.clientId = clientId;
-//        this.stateLinearId = stateLinearId;
-//        this.newLender = newLender;
-//    }
-//
-//    public String getClientId() {
-//        return clientId;
-//    }
-//
-//    public String getStateLinearId(){
-//        return stateLinearId;
-//    }
-//
-//    public String getNewLender(){
-//        return newLender;
-//    }
+    /*
+    * Hint:
+    * The IOUTransferFlowArgs class is used to hold the arguments required to start the IOU Transfer flow.
+    * It should contain the following fields:
+    * - clientId: A String representing the client ID.
+    * - stateLinearId: A String representing the linear ID of the IOU state to be transferred.
+    * - newLender: A String representing the new lender's name.
+    * */
+
 }
