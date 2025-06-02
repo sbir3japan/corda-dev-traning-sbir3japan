@@ -12,7 +12,7 @@ import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.testing.node.*;
-//import net.corda.training.contracts.IOUContract;
+import net.corda.training.contracts.IOUContract;
 import net.corda.training.states.IOUState;
 import org.junit.After;
 import org.junit.Before;
