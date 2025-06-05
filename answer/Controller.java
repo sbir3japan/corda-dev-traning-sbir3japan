@@ -131,7 +131,7 @@ public class Controller {
         }
     }
 
-    Capture all states.
+    // Capture all states.
     @GetMapping(value = "/iou_state/all")
     public ResponseEntity<?> vaultQueryAllIOUState(){
 
@@ -207,7 +207,7 @@ public class Controller {
         }
     }
 
-     Capture consumed states
+    // Capture consumed states
     @GetMapping(value = "/iou_state/consumed")
     public ResponseEntity<?> vaultQueryConsumedIOUState(){
 
